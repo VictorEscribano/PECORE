@@ -19,10 +19,10 @@ In this exercise, we are required to close a simple position control loop by sen
    
 4. **Usage**:
    - Execute the simulation:
-   '''bash
+   '''console
    ros2 launch pecore_launch tutorial1b.launch.py
    '''
    - Execute the controller:
-   '''bash
+   '''console
    ros2 launch pubvel velocity_publisher_launch.py
    '''
