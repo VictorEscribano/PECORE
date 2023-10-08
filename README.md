@@ -16,3 +16,13 @@ In this exercise, we are required to close a simple position control loop by sen
 
 3. **Closed loop and PID control**:
    - Set up and tune a PID to aquire the desired target pose.
+   
+4. **Usage**:
+   - Execute the simulation:
+   '''bash
+   ros2 launch pecore_launch tutorial1b.launch.py
+   '''
+   - Execute the controller:
+   '''bash
+   ros2 launch pubvel velocity_publisher_launch.py
+   '''
