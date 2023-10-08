@@ -14,12 +14,5 @@ In this exercise, we are required to close a simple position control loop by sen
    - Set a hardcoded desired position for the robot in the world frame.
    - Compute the error vector between the current and desired positions.
 
-3. **Velocity Vector**:
-   - Normalize the error vector to obtain a unit vector, which will be used as a directional velocity vector.
-
-4. **Velocity Command**:
-   - Convert the unit vector to linear `x` and angular `z` velocity values.
-   - Publish these values using the velocity publisher built in the previous exercise.
-
-5. **Verification**:
-   - Verify the functionality of the simple controller by observing the robot's behavior in reaching the desired position.
+3. **Closed loop and PID control**:
+   - Set up and tune a PID to aquire the desired target pose.
