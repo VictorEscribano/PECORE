@@ -1,6 +1,11 @@
 # PECORE 🤖
 This repository contains the code, assignments, and projects related to the Master's course on Perception and Cognition in Robotic Exploration (Percepció i Cognició en l'Exploració Robòtica - PECORE) offered at UPC-ETSEIB. The course explores the fundamental concepts, algorithms, and methodologies in robot perception, cognition, and exploration. The repository aims to serve as a resource for students, educators, and practitioners in the field of robotics and autonomous systems. It includes implementations and solutions developed in ROS 2 and other relevant frameworks and tools, covering a range of topics such as sensor processing, mapping, localization, planning, and decision-making in robotic systems.
 
+To complement the developed code please download the remaining dependencies where the simulations, robot configs, etc. are stored: [Download Dependencies](https://asantamarianavarro.gitlab.io/teaching/muar/pecore/src-files/pecore_2023.zip)
+
+For more information about this exercises follow this [tutorial](https://asantamarianavarro.gitlab.io/teaching/muar/pecore/t1.intro_ros/basic/basic.html).
+
+
 ## Exercise 1: Simple Position Control Loop - PUBVEL Package
 
 In this exercise, we are required to close a simple position control loop by sending velocity commands to the robot. The steps involved are as follows:
