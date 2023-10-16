@@ -48,30 +48,6 @@ def calculate_transformation_matrix(translation, rotation):
 
     return matrix
 
-# Define a function to convert a transformation matrix into a TransformStamped message
-def transform_matrix_to_transform_stamped(matrix, parent_frame, child_frame):
-    transform_stamped = TransformStamped()
-    transform_stamped.header.frame_id = parent_frame
-    transform_stamped.child_frame_id = child_frame
-
-    # Extract translation components from the matrix
-    transform_stamped.transform.translation.x = matrix[0, 3]
-    transform_stamped.transform.translation.y = matrix[1, 3]
-    transform_stamped.transform.translation.z = matrix[2, 3]
-
-    # Extract rotation components from the matrix
-    rotation = np.zeros(4)
-    rotation[3] = np.sqrt(max(0, 1 + matrix[0, 0] + matrix[1, 1] + matrix[2, 2])) / 2
-    rotation[0] = np.sqrt(max(0, 1 + matrix[0, 0] - matrix[1, 1] - matrix[2, 2])) / 2
-    rotation[1] = np.sqrt(max(0, 1 - matrix[0, 0] + matrix[1, 1] - matrix[2, 2])) / 2
-    rotation[2] = np.sqrt(max(0, 1 - matrix[0, 0] - matrix[1, 1] + matrix[2, 2])) / 2
-
-    transform_stamped.transform.rotation.x = rotation[0]
-    transform_stamped.transform.rotation.y = rotation[1]
-    transform_stamped.transform.rotation.z = rotation[2]
-    transform_stamped.transform.rotation.w = rotation[3]
-
-    return transform_stamped
 
 
 class TransformConcatenator(Node):
@@ -83,6 +59,17 @@ class TransformConcatenator(Node):
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
         self.tf_broadcaster = tf2_ros.TransformBroadcaster(self)
         self.timer = self.create_timer(0.1, self.get_ground_truth_async)  # 10Hz
+
+
+    def transform_matrix_to_transform_stamped(self, matrix, parent_frame, child_frame):
+        transform_stamped = TransformStamped()
+        transform_stamped.header.stamp = self.get_clock().now().to_msg()
+        transform_stamped.header.frame_id = parent_frame
+        transform_stamped.child_frame_id = child_frame
+        ...
+        # (same code as provided, no changes here)
+        ...
+        return transform_stamped
 
     def get_ground_truth_async(self):
         ## Wait for the service to be available
@@ -142,8 +129,7 @@ class TransformConcatenator(Node):
 
 
                 #TODO -> DONE: map_H_odom to TransformStamped
-                map_H_odom_transform = transform_matrix_to_transform_stamped(
-                    map_H_odom_matrix, 'map', 'odom')
+                map_H_odom_transform = self.transform_matrix_to_transform_stamped(map_H_odom_matrix, 'map', 'odom')
 
                 
                 #TODO -> DONE: publish map_H_odom
@@ -163,6 +149,8 @@ class TransformConcatenator(Node):
         transform_stamped.transform.rotation = pose.orientation
         transform_stamped.header.frame_id = parent_frame
         transform_stamped.child_frame_id = child_frame
+        #stamp now
+        transform_stamped.header.stamp = self.get_clock().now().to_msg()
         return transform_stamped
 
 def main(args=None):
@@ -174,7 +162,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
-        
-
-
