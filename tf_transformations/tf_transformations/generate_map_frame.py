@@ -66,10 +66,49 @@ class TransformConcatenator(Node):
         transform_stamped.header.stamp = self.get_clock().now().to_msg()
         transform_stamped.header.frame_id = parent_frame
         transform_stamped.child_frame_id = child_frame
-        ...
-        # (same code as provided, no changes here)
-        ...
+
+        # Extract translation from the matrix
+        translation = np.array([matrix[0, 3], matrix[1, 3], matrix[2, 3]])
+
+        # Extract rotation (quaternion) from the matrix
+        trace = matrix[0, 0] + matrix[1, 1] + matrix[2, 2]
+        if trace > 0:
+            s = 0.5 / np.sqrt(trace + 1.0)
+            w = 0.25 / s
+            x = (matrix[2, 1] - matrix[1, 2]) * s
+            y = (matrix[0, 2] - matrix[2, 0]) * s
+            z = (matrix[1, 0] - matrix[0, 1]) * s
+        elif matrix[0, 0] > matrix[1, 1] and matrix[0, 0] > matrix[2, 2]:
+            s = 2.0 * np.sqrt(1.0 + matrix[0, 0] - matrix[1, 1] - matrix[2, 2])
+            w = (matrix[2, 1] - matrix[1, 2]) / s
+            x = 0.25 * s
+            y = (matrix[0, 1] + matrix[1, 0]) / s
+            z = (matrix[0, 2] + matrix[2, 0]) / s
+        elif matrix[1, 1] > matrix[2, 2]:
+            s = 2.0 * np.sqrt(1.0 + matrix[1, 1] - matrix[0, 0] - matrix[2, 2])
+            w = (matrix[0, 2] - matrix[2, 0]) / s
+            x = (matrix[0, 1] + matrix[1, 0]) / s
+            y = 0.25 * s
+            z = (matrix[1, 2] + matrix[2, 1]) / s
+        else:
+            s = 2.0 * np.sqrt(1.0 + matrix[2, 2] - matrix[0, 0] - matrix[1, 1])
+            w = (matrix[1, 0] - matrix[0, 1]) / s
+            x = (matrix[0, 2] + matrix[2, 0]) / s
+            y = (matrix[1, 2] + matrix[2, 1]) / s
+            z = 0.25 * s
+
+        # Set the translation and rotation in the TransformStamped message
+        transform_stamped.transform.translation.x = translation[0]
+        transform_stamped.transform.translation.y = translation[1]
+        transform_stamped.transform.translation.z = translation[2]
+        transform_stamped.transform.rotation.x = x
+        transform_stamped.transform.rotation.y = y
+        transform_stamped.transform.rotation.z = z
+        transform_stamped.transform.rotation.w = w
+
         return transform_stamped
+
+
 
     def get_ground_truth_async(self):
         ## Wait for the service to be available
