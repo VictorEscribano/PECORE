@@ -40,7 +40,7 @@ class ArUcoApproachNode(Node):
         self.subscription_aruco  # prevent unused variable warning
         
         # Publisher for robot goal pose
-        self.goal_publisher = self.create_publisher(PoseStamped, '/move_base_simple/goal', 10)
+        self.goal_publisher = self.create_publisher(PoseStamped, '/goal_pose', 10)
         
         # TF Listener
         self.tf_buffer = Buffer()
@@ -55,6 +55,10 @@ class ArUcoApproachNode(Node):
         self.aruco_H_desPos.transform.rotation.y = 0.707
         self.aruco_H_desPos.transform.rotation.z = 0.0
         self.aruco_H_desPos.transform.rotation.w = 0.707
+        self.aruco_H_desPos.header.frame_id = 'aruco_marker_frame'
+        self.aruco_H_desPos.child_frame_id = 'desired_pose'
+        self.aruco_H_desPos.header.stamp = self.get_clock().now().to_msg()
+
         
     def aruco_callback(self, msg):
         try:
