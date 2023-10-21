@@ -32,6 +32,7 @@ In this exercise, we are required to close a simple position control loop by sen
    ros2 launch pubvel velocity_publisher_launch.py
    ```
 
+
 ## Exercise 2: TF transformations usage - tf_transformations Package
 In this exercise, we delve into the world of transformations and leverage ground truth data provided by the Gazebo simulation to concatenate TFs (Transformation Frames). The primary objective is to find the transformation map_H_odom by concatenating the known transformations map_H_baselink (provided by Gazebo) and odom_H_baselink (obtained through a TF listener).
 
@@ -59,6 +60,17 @@ The steps to achieve this are:
 
    ![TF_diagram](image.png)
 
-## Practice 1: Visual Servoing
+
+## Practice 1: Visual Servoing - visual_servoing_P1 Package
+In this practicum you will build a node to transform the pose of a detected target into a robot command pose to drive it and approach the target using relative localization.
+
+The target object will have some movement autonomy and will “react” to the approaching robot by “jumping” away. These movements are set to favor the detection of an ARUCO marker present in its front face.
+
+ **Usage:**
+    To execute the launch:
+   ```console
+   ros2 launch visual_servoing_P1 practicum1.launch.py 
+   ```
+
 [Screencast from 10-21-2023 04:21:55 PM.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/cf72cc39-8750-4b0d-9517-feae9d9318b7)
 
