@@ -58,3 +58,7 @@ The steps to achieve this are:
    ```
 
    ![TF_diagram](image.png)
+
+## Practice 1: Visual Servoing
+
+   ![Visual_Servoing_Video](PECORE/visual_servoing_P1/Screencast from 10-21-2023 04:21:55 PM.webm)
