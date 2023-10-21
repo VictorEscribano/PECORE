@@ -60,5 +60,5 @@ The steps to achieve this are:
    ![TF_diagram](image.png)
 
 ## Practice 1: Visual Servoing
+[Screencast from 10-21-2023 04:21:55 PM.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/cf72cc39-8750-4b0d-9517-feae9d9318b7)
 
-   ![Visual_Servoing_Video](PECORE/visual_servoing_P1/Screencast from 10-21-2023 04:21:55 PM.webm)
