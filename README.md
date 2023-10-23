@@ -66,7 +66,8 @@ In this practicum you will build a node to transform the pose of a detected targ
 
 We developed a set of functions stored in the transformations.py file so all the solutions can share this library and clean the main codes.
 To solve this problem, 2 solutions have been proposed:
- Markup : 1. Navigation using the Navigation Stack using global coordinates.
+
+1. **Navigation using the Navigation Stack using global coordinates.**
   **Usage:**
     To execute the launch:
    ```console
@@ -75,8 +76,8 @@ To solve this problem, 2 solutions have been proposed:
 
 [Screencast from 10-21-2023 04:21:55 PM.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/cf72cc39-8750-4b0d-9517-feae9d9318b7)
           
-          
-          2. Using custop PID controller in relative coordenates control.
+
+2. **Using custop PID controller in relative coordenates control.**
 
 
 
