@@ -11,7 +11,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/launch', ['launch/practicum1.launch.py']) 
+        ('share/' + package_name + '/launch', ['launch/pid_control_p1.launch.py']),
+        ('share/' + package_name + '/launch', ['launch/ros_nav_stack_p1.launch.py'])  
     ],
     install_requires=['setuptools'],
     zip_safe=True,

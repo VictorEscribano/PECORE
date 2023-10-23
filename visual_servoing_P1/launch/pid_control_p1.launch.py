@@ -73,18 +73,6 @@ def generate_launch_description():
         )
     )
 
-    # declared_arguments.append(
-    #     Node(
-    #         package='visual_servoing_P1',
-    #         executable='aruco_approach',
-    #         name='aruco_approach',
-    #         output='screen',
-    #         parameters=[{'use_sim_time': True}],
-    #         remappings=[ # Aquí puedes agregar remappings si es necesario
-    #             # ('/old/topic', '/new/topic')
-    #         ]
-    #     )
-    # )
 
     declared_arguments.append(
         Node(

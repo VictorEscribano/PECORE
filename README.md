@@ -71,13 +71,18 @@ To solve this problem, 2 solutions have been proposed:
   **Usage:**
     To execute the launch:
    ```console
-   ros2 launch visual_servoing_P1 practicum1.launch.py 
+   ros2 launch visual_servoing_P1 ros_nav_stack_p1.launch.py
    ```
 
 [Screencast from 10-21-2023 04:21:55 PM.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/cf72cc39-8750-4b0d-9517-feae9d9318b7)
           
 
 2. **Using custop PID controller in relative coordenates control.**
+**Usage:**
+    To execute the launch:
+   ```console
+   ros2 launch visual_servoing_P1 pid_control_p1.launch.py
+   ```
 
 
 
