@@ -64,13 +64,19 @@ The steps to achieve this are:
 ## Practice 1: Visual Servoing - visual_servoing_P1 Package
 In this practicum you will build a node to transform the pose of a detected target into a robot command pose to drive it and approach the target using relative localization.
 
-The target object will have some movement autonomy and will “react” to the approaching robot by “jumping” away. These movements are set to favor the detection of an ARUCO marker present in its front face.
-
- **Usage:**
+We developed a set of functions stored in the transformations.py file so all the solutions can share this library and clean the main codes.
+To solve this problem, 2 solutions have been proposed:
+ Markup : 1. Navigation using the Navigation Stack using global coordinates.
+  **Usage:**
     To execute the launch:
    ```console
    ros2 launch visual_servoing_P1 practicum1.launch.py 
    ```
 
 [Screencast from 10-21-2023 04:21:55 PM.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/cf72cc39-8750-4b0d-9517-feae9d9318b7)
+          
+          
+          2. Using custop PID controller in relative coordenates control.
+
+
 
