@@ -9,7 +9,7 @@ from rclpy.executors import MultiThreadedExecutor																	# Allows to ad
 from tf2_ros.transform_listener import TransformListener															# Allows to create listeners for tf transforms
 from tf2_ros import TransformException																				# Allows to handle errors on the transformations done from buffer
 from tf2_ros.buffer import Buffer																					# Allows to create objects to store on a buffer the tfs between frames
-from geometry_msgs.msg import Twist																					# Allows to create a publisher to that message from geometry defined messages
+from geometry_msgs.msg import Twist, TransformStamped   															# Allows to create a publisher to that message from geometry defined messages
 from visual_servoing_P1.transformations  import homo_matrix2tf, Rt2homo_matrix, transform2pose
 
 
@@ -23,6 +23,7 @@ class RobVelController(Node):
 		self.declare_parameter("main_frame","map")																	# Declaration of the desired parent frame for the transformations
 		self.declare_parameter("rob_frame","base_link")																# Declaration of the desired parent frame for the transformations
 		self.declare_parameter("des_frame","des_rob_pose")															# Declaration of the desired child frame for the transformations
+		self.declare_parameter("aruco_frame","aruco_marker_frame")															# Declaration of the desired child frame for the transformations
 		self.declare_parameter("kp_pos",2.0)																		# Declaration of the desired Kp for the robot error in position controller
 		self.declare_parameter("ki_pos",0.1)																		# Declaration of the desired Ki for the robot error in position controller
 		self.declare_parameter("kp_angle",5.0)																		# Declaration of the desired Kp for the robot error in orientation controller
@@ -58,11 +59,26 @@ class RobVelController(Node):
 		self.tf_world_frame=self.get_parameter("main_frame").value													# Get the frame to use as world reference for tf buffer transforms
 		self.tf_rob_frame=self.get_parameter("rob_frame").value 													# Get the frame to use as robot frame for tf buffer transforms
 		self.tf_des_frame=self.get_parameter("des_frame").value														# Get the frame to use as desired robot frame for tf buffer transforms
+		self.tf_aruco_frame=self.get_parameter("aruco_frame").value													# Get the frame to use as desired robot frame for tf buffer transforms
 		self.kp_pos=self.get_parameter("kp_pos").value																# Get the value for the kp introduced for position controller by user on the attribute
 		self.kp_angle=self.get_parameter("kp_angle").value															# Get the value for the kp introduced for orientation controller by user on the attribute
 		self.ki_pos=self.get_parameter("ki_pos").value																# Get the value for the ki introduced for position controller by user on the attribute
 		self.ki_angle=self.get_parameter("ki_angle").value															# Get the value for the ki introduced for orientation controller by user on the attribute
+
+		# Desired camera pose w.r.t. the target (ArUco marker)
+		self.aruco_H_desPos = TransformStamped()
+		self.aruco_H_desPos.transform.translation.x = 0.0
+		self.aruco_H_desPos.transform.translation.y = 0.0
+		self.aruco_H_desPos.transform.translation.z = 0.1
+		self.aruco_H_desPos.transform.rotation.x = -0.707
+		self.aruco_H_desPos.transform.rotation.y = 0.707
+		self.aruco_H_desPos.transform.rotation.z = 0.0
+		self.aruco_H_desPos.transform.rotation.w = 0.707
+		self.aruco_H_desPos.header.frame_id = self.tf_aruco_frame
+		self.aruco_H_desPos.child_frame_id = self.tf_des_frame
+		self.aruco_H_desPos.header.stamp = self.get_clock().now().to_msg()
     									
+
     # Definition of function to perform when timer callback must be executed to publish a new global robot pose    
 	def SetNewVelCommand(self):
     	
@@ -70,8 +86,8 @@ class RobVelController(Node):
 		
 		# Attempt to get the transform map_H_actpose first with data from buffer and listener
 		try:
-			tf_found = self.tf_buffer.lookup_transform(self.tf_world_frame,self.tf_rob_frame,rclpy.time.Time()) 	# Create the transformation first upon given data on buffer for tfs
-			mapHactrob=Rt2homo_matrix(tf_found.transform.translation,tf_found.transform.rotation)				# Get the homogeneous transformation from the obtained tf found on the buffer
+			map_H_robot = self.tf_buffer.lookup_transform(self.tf_world_frame,self.tf_rob_frame,rclpy.time.Time()) 	# Create the transformation first upon given data on buffer for tfs
+			mapHactrob=Rt2homo_matrix(map_H_robot.transform.translation,map_H_robot.transform.rotation)				# Get the homogeneous transformation from the obtained tf found on the buffer
     
         # Handle an exception if it occurs during the transformation
 		except TransformException as ex:
@@ -81,9 +97,11 @@ class RobVelController(Node):
 
 		# Attempt next to get the transform map_H_despose with data from buffer and listener
 		try:
-			tf_found=self.tf_buffer.lookup_transform(self.tf_world_frame,self.tf_des_frame,rclpy.time.Time()) 		# Create the transformation first upon given data on buffer for tfs
-			mapHdespos=Rt2homo_matrix(tf_found.transform.translation,tf_found.transform.rotation)				# Get the homogeneous transformation from the obtained tf found on the buffer
-   			
+			mapHaruco_tf=self.tf_buffer.lookup_transform(self.tf_world_frame, self.tf_aruco_frame, rclpy.time.Time()) 		# Create the transformation first upon given data on buffer for tfs
+			mapHaruco=Rt2homo_matrix(mapHaruco_tf.transform.translation,mapHaruco_tf.transform.rotation)				# Get the homogeneous transformation from the obtained tf found on the buffer
+			arucoHdesired_tf = Rt2homo_matrix(self.aruco_H_desPos.transform.translation, self.aruco_H_desPos.transform.rotation)
+			mapHdespos = np.dot(mapHaruco, arucoHdesired_tf)
+
       	# Handle an exception if it occurs during the transformation	
 		except TransformException as ex:
 			# Print on the terminal the error that occurred
