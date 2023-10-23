@@ -22,6 +22,7 @@ Descripcion: Funciones para poder transformar entre matrices de transformacion y
 
 from geometry_msgs.msg import TransformStamped, PoseStamped
 import numpy as np
+import math
 
 # Define a function to calculate the transformation matrix
 def Rt2homo_matrix(translation, rotation):
@@ -122,3 +123,60 @@ def transform2pose(transform):
     pose.pose.position.z = transform.transform.translation.z
     pose.pose.orientation = transform.transform.rotation
     return pose
+
+def euler2quaternion(ai, aj, ak):
+    ai /= 2.0
+    aj /= 2.0
+    ak /= 2.0
+    ci = math.cos(ai)
+    si = math.sin(ai)
+    cj = math.cos(aj)
+    sj = math.sin(aj)
+    ck = math.cos(ak)
+    sk = math.sin(ak)
+    cc = ci*ck
+    cs = ci*sk
+    sc = si*ck
+    ss = si*sk
+    q = np.empty((4, ))
+    q[0] = cj*sc - sj*cs
+    q[1] = cj*ss + sj*cc
+    q[2] = cj*cs - sj*sc
+    q[3] = cj*cc + sj*ss
+    return q
+
+import numpy as np
+import math
+
+def quaternion2euler(q):
+    """
+    Convert a quaternion into Euler angles (yaw, pitch, and roll).
+    q : np.array, quaternion [w, x, y, z]
+    Returns three Euler angles in radians.
+    """
+    # Normalize quaternion
+    norm_q = np.linalg.norm(q)
+    q = q / norm_q
+    
+    w, x, y, z = q
+    t0 = +2.0 * (w * x + y * z)
+    t1 = +1.0 - 2.0 * (x * x + y * y)
+    roll_x = math.atan2(t0, t1)
+
+    t2 = +2.0 * (w * y - z * x)
+    t2 = +1.0 if t2 > +1.0 else t2
+    t2 = -1.0 if t2 < -1.0 else t2
+    pitch_y = math.asin(t2)
+
+    t3 = +2.0 * (w * z + x * y)
+    t4 = +1.0 - 2.0 * (y * y + z * z)
+    yaw_z = math.atan2(t3, t4)
+
+    return yaw_z, pitch_y, roll_x  # in radians
+
+def normalize_angle(angle):
+    while angle > math.pi:
+        angle -= 2.0 * math.pi
+    while angle < -math.pi:
+        angle += 2.0 * math.pi
+    return angle

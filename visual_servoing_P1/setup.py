@@ -23,7 +23,8 @@ setup(
     entry_points={
         'console_scripts': [
         'generate_map_frame = visual_servoing_P1.generate_map_frame:main',
-        'aruco_approach = visual_servoing_P1.aruco_approach:main'
+        'aruco_approach = visual_servoing_P1.aruco_approach:main',
+        'robot_vel_controller = visual_servoing_P1.robot_vel_controller:main'
         ],
     },
 )
