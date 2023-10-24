@@ -22,7 +22,7 @@ Descripcion: Codigo encargado de obtener la transformacion de la pose deseada en
 
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import PoseStamped, TransformStamped
+from geometry_msgs.msg import PoseStamped, TransformStamped, Transform
 from tf2_ros import TransformListener, Buffer
 import numpy as np
 from visual_servoing_P1.transformations  import homo_matrix2tf, Rt2homo_matrix, transform2pose
@@ -62,10 +62,18 @@ class ArUcoApproachNode(Node):
         
     def aruco_callback(self, msg):
         try:
+
+            # Define the transformation between the camera and aruco frame
+            cam_H_aruco = TransformStamped()
+            cam_H_aruco.transform.translation.x = msg.pose.position.x
+            cam_H_aruco.transform.translation.y = msg.pose.position.y
+            cam_H_aruco.transform.translation.z = msg.pose.position.z
+            cam_H_aruco.transform.rotation = msg.pose.orientation
+
             # Look up the required transformations
             now = rclpy.time.Time()
-            cam_H_aruco = self.tf_buffer.lookup_transform('front_camera_mount', 'aruco_marker_frame', now)
-            robot_H_cam = self.tf_buffer.lookup_transform('base_link', 'front_camera_mount', now)
+            # cam_H_aruco = self.tf_buffer.lookup_transform('front_camera_mount', 'aruco_marker_frame', now)
+            robot_H_cam = self.tf_buffer.lookup_transform('base_link', 'front_camera_optical', now)
             map_H_robot = self.tf_buffer.lookup_transform('map', 'base_link', now)
 
             cam_H_aruco_matrix = Rt2homo_matrix(cam_H_aruco.transform.translation, cam_H_aruco.transform.rotation)
