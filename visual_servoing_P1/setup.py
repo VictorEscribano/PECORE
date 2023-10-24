@@ -12,7 +12,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         ('share/' + package_name + '/launch', ['launch/pid_control_p1.launch.py']),
-        ('share/' + package_name + '/launch', ['launch/ros_nav_stack_p1.launch.py'])  
+        ('share/' + package_name + '/launch', ['launch/ros_nav_stack_p1.launch.py']),
+        ('share/' + package_name + '/launch', ['launch/visual_servoing.launch.py'])  
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -25,7 +26,8 @@ setup(
         'console_scripts': [
         'generate_map_frame = visual_servoing_P1.generate_map_frame:main',
         'aruco_approach = visual_servoing_P1.aruco_approach:main',
-        'robot_vel_controller = visual_servoing_P1.robot_vel_controller:main'
+        'robot_vel_controller = visual_servoing_P1.robot_vel_controller:main',
+        'visual_servoing = visual_servoing_P1.visual_servoing:main'
         ],
     },
 )

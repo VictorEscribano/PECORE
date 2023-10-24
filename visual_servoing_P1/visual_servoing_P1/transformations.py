@@ -148,31 +148,53 @@ def euler2quaternion(ai, aj, ak):
 import numpy as np
 import math
 
-def quaternion2euler(q):
-    """
-    Convert a quaternion into Euler angles (yaw, pitch, and roll).
-    q : np.array, quaternion [w, x, y, z]
-    Returns three Euler angles in radians.
-    """
-    # Normalize quaternion
-    norm_q = np.linalg.norm(q)
-    q = q / norm_q
+# def quaternion2euler(q):
+#     """
+#     Convert a quaternion into Euler angles (yaw, pitch, and roll).
+#     q : np.array, quaternion [w, x, y, z]
+#     Returns three Euler angles in radians.
+#     """
+#     # Normalize quaternion
+#     norm_q = np.linalg.norm(q)
+#     q = q / norm_q
     
-    w, x, y, z = q
-    t0 = +2.0 * (w * x + y * z)
-    t1 = +1.0 - 2.0 * (x * x + y * y)
-    roll_x = math.atan2(t0, t1)
+#     w, x, y, z = q
+#     t0 = +2.0 * (w * x + y * z)
+#     t1 = +1.0 - 2.0 * (x * x + y * y)
+#     roll_x = math.atan2(t0, t1)
 
-    t2 = +2.0 * (w * y - z * x)
-    t2 = +1.0 if t2 > +1.0 else t2
-    t2 = -1.0 if t2 < -1.0 else t2
-    pitch_y = math.asin(t2)
+#     t2 = +2.0 * (w * y - z * x)
+#     t2 = +1.0 if t2 > +1.0 else t2
+#     t2 = -1.0 if t2 < -1.0 else t2
+#     pitch_y = math.asin(t2)
 
-    t3 = +2.0 * (w * z + x * y)
-    t4 = +1.0 - 2.0 * (y * y + z * z)
-    yaw_z = math.atan2(t3, t4)
+#     t3 = +2.0 * (w * z + x * y)
+#     t4 = +1.0 - 2.0 * (y * y + z * z)
+#     yaw_z = math.atan2(t3, t4)
 
-    return yaw_z, pitch_y, roll_x  # in radians
+#     return yaw_z, pitch_y, roll_x  # in radians
+
+def quaternion2euler(x, y, z, w):
+        """
+        Convert a quaternion into euler angles (roll, pitch, yaw)
+        roll is rotation around x in radians (counterclockwise)
+        pitch is rotation around y in radians (counterclockwise)
+        yaw is rotation around z in radians (counterclockwise)
+        """
+        t0 = +2.0 * (w * x + y * z)
+        t1 = +1.0 - 2.0 * (x * x + y * y)
+        roll_x = math.atan2(t0, t1)
+     
+        t2 = +2.0 * (w * y - z * x)
+        t2 = +1.0 if t2 > +1.0 else t2
+        t2 = -1.0 if t2 < -1.0 else t2
+        pitch_y = math.asin(t2)
+     
+        t3 = +2.0 * (w * z + x * y)
+        t4 = +1.0 - 2.0 * (y * y + z * z)
+        yaw_z = math.atan2(t3, t4)
+     
+        return roll_x, pitch_y, yaw_z # in radians
 
 def normalize_angle(angle):
     while angle > math.pi:
