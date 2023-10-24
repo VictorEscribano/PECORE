@@ -32,7 +32,7 @@ from rclpy.executors import MultiThreadedExecutor																	# Allows to ad
 from tf2_ros.transform_listener import TransformListener															# Allows to create listeners for tf transforms
 from tf2_ros import TransformException																				# Allows to handle errors on the transformations done from buffer
 from tf2_ros.buffer import Buffer																					# Allows to create objects to store on a buffer the tfs between frames
-from geometry_msgs.msg import Twist, TransformStamped   															# Allows to create a publisher to that message from geometry defined messages
+from geometry_msgs.msg import Twist, TransformStamped, PoseStamped  															# Allows to create a publisher to that message from geometry defined messages
 from visual_servoing_P1.transformations  import homo_matrix2tf, Rt2homo_matrix, transform2pose
 
 
@@ -51,7 +51,15 @@ class RobVelController(Node):
 		self.declare_parameter("ki_pos",0.1)																		# Declaration of the desired Ki for the robot error in position controller
 		self.declare_parameter("kp_angle",5.0)																		# Declaration of the desired Kp for the robot error in orientation controller
 		self.declare_parameter("ki_angle",0.1)																		# Declaration of the desired Kp for the robot error in orientation controller
-    	
+		
+		
+		self.subscription_aruco = self.create_subscription(
+            PoseStamped,
+            '/aruco_single/pose',
+            self.aruco_callback,
+            10)
+		self.subscription_aruco  # prevent unused variable warning
+	
      	# Definition of all necessary callback groups
 		self.pub_group=MutuallyExclusiveCallbackGroup()																# Callback groups for the publisher messages
     	
@@ -100,7 +108,14 @@ class RobVelController(Node):
 		self.aruco_H_desPos.header.frame_id = self.tf_aruco_frame
 		self.aruco_H_desPos.child_frame_id = self.tf_des_frame
 		self.aruco_H_desPos.header.stamp = self.get_clock().now().to_msg()
-    									
+		
+		
+	def aruco_callback(self, msg):
+		cam_H_aruco = TransformStamped()
+		cam_H_aruco.transform.translation.x = msg.pose.position.x
+		cam_H_aruco.transform.translation.y = msg.pose.position.y
+		cam_H_aruco.transform.translation.z = msg.pose.position.z
+		cam_H_aruco.transform.rotation = msg.pose.orientation						
 
     # Definition of function to perform when timer callback must be executed to publish a new global robot pose    
 	def SetNewVelCommand(self):
