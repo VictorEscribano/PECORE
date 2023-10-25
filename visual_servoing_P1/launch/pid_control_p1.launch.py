@@ -80,10 +80,26 @@ def generate_launch_description():
             executable='robot_vel_controller',
             name='robot_vel_controller',
             output='screen',
-            parameters=[{'use_sim_time': True}],
-            remappings=[ # Aquí puedes agregar remappings si es necesario
-                # ('/old/topic', '/new/topic')
+            parameters=[
+                {'main_frame': "map"},
+                {'rob_frame': "base_link"}, 
+                {'des_frame': "des_rob_pose"},
+                {"aruco_frame":"aruco_marker_frame"},
+                {'kp_pos':1.5},
+                {'ki_pos':0.1},
+                {'kp_angle':2.0},
+                {'ki_angle':0.1},
+                {"use_sim_time":True}
             ]
+        )
+    )
+    
+    declared_arguments.append(
+        Node(
+            package = "tf2_ros",
+            executable = "static_transform_publisher",
+            arguments = ["0.0", "0.0", "0.1", "-0.707", "0.707", "0","0.707", "aruco_marker_frame", "desired_cam_pose"],
+            output = "screen"
         )
     )
 

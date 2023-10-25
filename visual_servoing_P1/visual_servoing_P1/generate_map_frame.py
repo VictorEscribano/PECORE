@@ -40,8 +40,11 @@ class TransformConcatenator(Node):
         self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
         self.tf_broadcaster = tf2_ros.TransformBroadcaster(self)
         self.timer = self.create_timer(0.1, self.get_ground_truth_async)  # 10Hz
-
-
+        
+        # Generate dummy subscription to have always the aruco marker frame on the tf tree in case aruco_follower.py is not used
+        self.subscription_aruco = self.create_subscription(PoseStamped,'/aruco_single/pose',self.aruco_callback,10) 
+        self.subscription_aruco  # prevent unused variable warning
+    
     def get_ground_truth_async(self):
         ## Wait for the service to be available
         self.get_state_client.wait_for_service()
@@ -78,7 +81,10 @@ class TransformConcatenator(Node):
         except Exception as e:
             self.get_logger().error(f'Failed to call service: {e}')
 
-
+    # Dummy callback function for the subscription to aruco pose
+    def aruco_callback(self, msg):
+        pass
+    
 def main(args=None):
     rclpy.init(args=args)
     node = TransformConcatenator()

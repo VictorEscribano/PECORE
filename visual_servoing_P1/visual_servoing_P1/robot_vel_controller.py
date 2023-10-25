@@ -8,19 +8,17 @@ $$ |      $$ |      $$ |  $$\ $$ |  $$ |$$ |  $$ |$$ |            $$ |        $$
 $$ |      $$$$$$$$\ \$$$$$$  | $$$$$$  |$$ |  $$ |$$$$$$$$\       $$ |      $$$$$$\ 
 \__|      \________| \______/  \______/ \__|  \__|\________|      \__|      \______|
 """
-# * PECORE - Master en Automática y Control en Robótica               *
+# * PECORE - Master en Automática y Control en Robótica                *
 # * Universitat Politècnica de Catalunya (UPC)                         *
 # *                                                                    *
 # * Participantes:                                                     *
 # * - Victor Escribano Garcia                                          *
-# * - Alejandro Acosta Montilla                                       *
+# * - Alejandro Acosta Montilla                                        *
 # *                                                                    *
 # * Año: 2023                                                                                       
 """
 Descripcion: Codigo encargado de enviar comandos de velocidad basados en el controlador PI.
 """  
-
-
 # Imports from python libraries
 import rclpy
 import numpy as np
@@ -32,9 +30,8 @@ from rclpy.executors import MultiThreadedExecutor																	# Allows to ad
 from tf2_ros.transform_listener import TransformListener															# Allows to create listeners for tf transforms
 from tf2_ros import TransformException																				# Allows to handle errors on the transformations done from buffer
 from tf2_ros.buffer import Buffer																					# Allows to create objects to store on a buffer the tfs between frames
-from geometry_msgs.msg import Twist, TransformStamped, PoseStamped  															# Allows to create a publisher to that message from geometry defined messages
-from visual_servoing_P1.transformations  import homo_matrix2tf, Rt2homo_matrix, transform2pose
-
+from geometry_msgs.msg import Twist, TransformStamped, PoseStamped  												# Allows to create a publisher to that message from geometry defined messages
+from visual_servoing_P1.transformations  import *																	# Library that allows to generate transformations between tf and homogeneous transforms among others
 
 # Definition of the class to use with the node
 class RobVelController(Node):
@@ -46,23 +43,15 @@ class RobVelController(Node):
 		self.declare_parameter("main_frame","map")																	# Declaration of the desired parent frame for the transformations
 		self.declare_parameter("rob_frame","base_link")																# Declaration of the desired parent frame for the transformations
 		self.declare_parameter("des_frame","des_rob_pose")															# Declaration of the desired child frame for the transformations
-		self.declare_parameter("aruco_frame","aruco_marker_frame")															# Declaration of the desired child frame for the transformations
+		self.declare_parameter("aruco_frame","aruco_marker_frame")													# Declaration of the desired child frame for the transformations
 		self.declare_parameter("kp_pos",2.0)																		# Declaration of the desired Kp for the robot error in position controller
 		self.declare_parameter("ki_pos",0.1)																		# Declaration of the desired Ki for the robot error in position controller
 		self.declare_parameter("kp_angle",5.0)																		# Declaration of the desired Kp for the robot error in orientation controller
 		self.declare_parameter("ki_angle",0.1)																		# Declaration of the desired Kp for the robot error in orientation controller
-		
-		
-		self.subscription_aruco = self.create_subscription(
-            PoseStamped,
-            '/aruco_single/pose',
-            self.aruco_callback,
-            10)
-		self.subscription_aruco  # prevent unused variable warning
 	
      	# Definition of all necessary callback groups
 		self.pub_group=MutuallyExclusiveCallbackGroup()																# Callback groups for the publisher messages
-    	
+	
 		# Definition of all publishing and subscribing methods
 		self.pub_pose_pub = self.create_publisher(Twist,'/jackal_velocity_controller/cmd_vel_unstamped', 100)		# Creation of the publisher for the node with the speed for the jackal
   
@@ -107,15 +96,7 @@ class RobVelController(Node):
 		self.aruco_H_desPos.transform.rotation.w = 0.707
 		self.aruco_H_desPos.header.frame_id = self.tf_aruco_frame
 		self.aruco_H_desPos.child_frame_id = self.tf_des_frame
-		self.aruco_H_desPos.header.stamp = self.get_clock().now().to_msg()
-		
-		
-	def aruco_callback(self, msg):
-		cam_H_aruco = TransformStamped()
-		cam_H_aruco.transform.translation.x = msg.pose.position.x
-		cam_H_aruco.transform.translation.y = msg.pose.position.y
-		cam_H_aruco.transform.translation.z = msg.pose.position.z
-		cam_H_aruco.transform.rotation = msg.pose.orientation						
+		self.aruco_H_desPos.header.stamp = self.get_clock().now().to_msg()			
 
     # Definition of function to perform when timer callback must be executed to publish a new global robot pose    
 	def SetNewVelCommand(self):
@@ -135,8 +116,8 @@ class RobVelController(Node):
 
 		# Attempt next to get the transform map_H_despose with data from buffer and listener
 		try:
-			mapHaruco_tf=self.tf_buffer.lookup_transform(self.tf_world_frame, self.tf_aruco_frame, rclpy.time.Time()) 		# Create the transformation first upon given data on buffer for tfs
-			mapHaruco=Rt2homo_matrix(mapHaruco_tf.transform.translation,mapHaruco_tf.transform.rotation)				# Get the homogeneous transformation from the obtained tf found on the buffer
+			mapHaruco_tf=self.tf_buffer.lookup_transform(self.tf_world_frame, self.tf_aruco_frame, rclpy.time.Time()) # Create the transformation first upon given data on buffer for tfs
+			mapHaruco=Rt2homo_matrix(mapHaruco_tf.transform.translation,mapHaruco_tf.transform.rotation)			  # Get the homogeneous transformation from the obtained tf found on the buffer
 			arucoHdesired_tf = Rt2homo_matrix(self.aruco_H_desPos.transform.translation, self.aruco_H_desPos.transform.rotation)
 			mapHdespos = np.dot(mapHaruco, arucoHdesired_tf)
 
@@ -160,13 +141,7 @@ class RobVelController(Node):
 		vel_pose_goal.angular.z=self.kp_angle*angle_error+self.ki_angle*self.angle_error							# Set up the angula aspeed as the angle between x and y error (yaw rate)
 
    		# Send the message broadcasted
-		self.pub_pose_pub.publish(vel_pose_goal)																	# Publish the data of the velocity command
-		
-		# Print out on terminal the new values sent to the robot
-		#self.get_logger().info('sending new velocity command as vx=%f, vz=%f' %(vel_pose_goal.linear.x,vel_pose_goal.angular.z))	
-
-															# Return finally the transform obtained as numpy array
-	
+		self.pub_pose_pub.publish(vel_pose_goal)																	# Publish the data of the velocity command	
 
 # Main function that will be called from the script
 def main(args=None):

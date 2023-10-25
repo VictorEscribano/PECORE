@@ -85,6 +85,14 @@ def generate_launch_description():
             ]
         )
     )
-
+    
+    declared_arguments.append(
+        Node(
+            package = "tf2_ros",
+            executable = "static_transform_publisher",
+            arguments = ["0.0", "0.0", "0.1", "-0.707", "0.707", "0","0.707", "aruco_marker_frame", "desired_cam_pose"],
+            output = "screen"
+        )
+    )
 
     return LaunchDescription(declared_arguments)

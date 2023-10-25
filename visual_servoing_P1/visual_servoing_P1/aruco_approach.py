@@ -8,12 +8,12 @@ $$ |      $$ |      $$ |  $$\ $$ |  $$ |$$ |  $$ |$$ |            $$ |        $$
 $$ |      $$$$$$$$\ \$$$$$$  | $$$$$$  |$$ |  $$ |$$$$$$$$\       $$ |      $$$$$$\ 
 \__|      \________| \______/  \______/ \__|  \__|\________|      \__|      \______|
 """
-# * PECORE - Master en Automática y Control en Robótica               *
+# * PECORE - Master en Automática y Control en Robótica                *
 # * Universitat Politècnica de Catalunya (UPC)                         *
 # *                                                                    *
 # * Participantes:                                                     *
 # * - Victor Escribano Garcia                                          *
-# * - Alejandro Acosta Montilla                                       *
+# * - Alejandro Acosta Montilla                                        *
 # *                                                                    *
 # * Año: 2023                                                                                       
 """

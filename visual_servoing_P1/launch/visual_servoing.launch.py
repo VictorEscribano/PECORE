@@ -33,9 +33,6 @@ def generate_launch_description():
             name='generate_map_frame',
             output='screen',
             parameters=[{'use_sim_time': True}],
-            remappings=[ # Aquí puedes agregar remappings si es necesario
-                # ('/old/topic', '/new/topic')
-            ]
         )
     )
     
@@ -72,19 +69,28 @@ def generate_launch_description():
             output="screen"
         )
     )
-
+    
     declared_arguments.append(
         Node(
             package='visual_servoing_P1',
-            executable='visual_servoing',
-            name='visual_servoing',
+            executable='pbvs_vel_controller',
+            name='pbvs_vel_controller',
             output='screen',
-            parameters=[{'use_sim_time': True}],
-            remappings=[ # Aquí puedes agregar remappings si es necesario
-                # ('/old/topic', '/new/topic')
-            ]
+            parameters=[
+                {'rob_frame': "front_camera_optical"}, 
+                {'des_frame': "desired_cam_pose"},
+                {'lamb_val':3.0},
+                {"use_sim_time":True}]
         )
     )
-
+    
+    declared_arguments.append(
+        Node(
+            package = "tf2_ros",
+            executable = "static_transform_publisher",
+            arguments = ["0.0", "0.0", "0.1", "-0.707", "0.707", "0","0.707", "aruco_marker_frame", "desired_cam_pose"],
+            output = "screen"
+        )
+    )
 
     return LaunchDescription(declared_arguments)
