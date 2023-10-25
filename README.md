@@ -1,5 +1,7 @@
 # PECORE 🤖
-This repository contains the code, assignments, and projects related to the Master's course on Perception and Cognition in Robotic Exploration (Percepció i Cognició en l'Exploració Robòtica - PECORE) offered at UPC-ETSEIB. The course explores the fundamental concepts, algorithms, and methodologies in robot perception, cognition, and exploration. The repository aims to serve as a resource for students, educators, and practitioners in the field of robotics and autonomous systems. It includes implementations and solutions developed in ROS 2 and other relevant frameworks and tools, covering a range of topics such as sensor processing, mapping, localization, planning, and decision-making in robotic systems.
+This repository contains the code, assignments, and projects related to the Master's course on Perception and Cognition in Robotic Exploration (PECORE) offered at UPC-ETSEIB. The course explores the fundamental concepts, algorithms, and methodologies in robot perception, cognition, and exploration. 
+
+The repository includes implementations and solutions developed in ROS 2 and other relevant frameworks and tools, covering a range of topics such as sensor processing, mapping, localization, planning, and decision-making in robotic systems.
 
 To complement the developed code please download the remaining dependencies where the simulations, robot configs, etc. are stored: [Download Dependencies](https://asantamarianavarro.gitlab.io/teaching/muar/pecore/src-files/pecore_2023.zip)
 
@@ -65,7 +67,7 @@ The steps to achieve this are:
 In this practicum you will build a node to transform the pose of a detected target into a robot command pose to drive it and approach the target using relative localization.
 
 We developed a set of functions stored in the transformations.py file so all the solutions can share this library and clean the main codes.
-To solve this problem, 2 solutions have been proposed:
+To solve this problem, 3 solutions have been proposed:
 
 1. **Navigation using the Navigation Stack using global coordinates.**
   **Usage:**
@@ -77,12 +79,21 @@ To solve this problem, 2 solutions have been proposed:
 [Screencast from 10-21-2023 04:21:55 PM.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/cf72cc39-8750-4b0d-9517-feae9d9318b7)
           
 
-2. **Using custop PID controller in relative coordenates control.**
+
+2. **Using custom PID controller in relative coordenates control.**
 **Usage:**
     To execute the launch:
    ```console
    ros2 launch visual_servoing_P1 pid_control_p1.launch.py
    ```
 
+
+
+3. **Using position bsed visual servoing in relative coordenates control.**
+**Usage:**
+    To execute the launch:
+   ```console
+   ros2 launch visual_servoing_P1 visual_servoing.launch.py
+   ```
 
 
