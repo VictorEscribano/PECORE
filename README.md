@@ -76,9 +76,9 @@ To solve this problem, 3 solutions have been proposed:
    ros2 launch visual_servoing_P1 ros_nav_stack_p1.launch.py
    ```
 
-[Screencast from 10-21-2023 04:21:55 PM.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/cf72cc39-8750-4b0d-9517-feae9d9318b7)
-          
+[p1_aruco-approach_NavStack_pose.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/68ee7e6d-fa63-49d8-a9b7-cb5eacba77e3)
 
+          
 
 2. **Using custom PID controller in relative coordenates control.**
 **Usage:**
@@ -86,6 +86,8 @@ To solve this problem, 3 solutions have been proposed:
    ```console
    ros2 launch visual_servoing_P1 pid_control_p1.launch.py
    ```
+   
+[p1_vel_controller_pidcontrol.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/8c8e58e2-8b60-4d3f-8a16-5e029bf293fa)
 
 
 
@@ -96,4 +98,5 @@ To solve this problem, 3 solutions have been proposed:
    ros2 launch visual_servoing_P1 visual_servoing.launch.py
    ```
 
+[p1_PBVS-vel_controller_pbvs.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/4d8b7501-48cd-417a-b0de-05fb9489afd7)
 
