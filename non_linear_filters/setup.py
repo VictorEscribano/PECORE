@@ -10,6 +10,9 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/launch', ['launch/ekf_gps.launch.py']),
+        ('share/' + package_name + '/launch/include', ['launch/include/jackal_localization.launch.py']),
+        ('share/' + package_name + '/launch/include', ['launch/include/jackal_sim.launch.py'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
