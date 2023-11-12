@@ -1,4 +1,4 @@
-ekf_gps:
+ukf_gps:
   ros__parameters:
     frequency: 10.0
     odom_frame: odom
@@ -8,6 +8,11 @@ ekf_gps:
     publish_tf: true
     two_d_mode: true
     predict_to_current_time: true
+    sensor_timeout: 0.1
+    
+    kappa: 0.0
+    alpha: 0.001
+    beta: 2.0
     
     odom0: /jackal_velocity_controller/odom
     odom0_config: [true, true, true,
@@ -33,7 +38,7 @@ ekf_gps:
                   false, false, false]
     imu0_differential: false
     imu0_remove_gravitational_acceleration: true
-
+    
     use_control: false
 
     process_noise_covariance: [1e-3, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
@@ -67,3 +72,4 @@ ekf_gps:
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     1.0,   0.0,    0.0,
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    1.0,  0.0,
                                   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,    0.0,    1.0]
+    
