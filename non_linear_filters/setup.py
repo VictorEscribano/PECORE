@@ -9,13 +9,14 @@ here = os.path.abspath(os.path.dirname(__file__))
 # List of YAML configuration files
 yaml_config_files = [
     os.path.join('config', 'ekf_config.yaml'),
-    # Add other YAML files here if necessary
+    os.path.join('config', 'ukf_config.yaml')
 ]
 
 # List of launch files
 launch_files = [
     os.path.join('launch', 'ekf_gps.launch.py'),
-    os.path.join('launch/include', 'jackal_localization.launch.py'),
+    os.path.join('launch/include', 'ekf_localization.launch.py'),
+    os.path.join('launch/include', 'ukf_localization.launch.py'),
     os.path.join('launch/include', 'jackal_sim.launch.py'),
     # Add other launch files here if necessary
 ]

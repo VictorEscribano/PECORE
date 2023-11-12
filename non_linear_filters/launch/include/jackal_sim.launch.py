@@ -102,7 +102,7 @@ def generate_launch_description():
     # Launch Localization
     jackal_localization = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(PathJoinSubstitution(
-                [FindPackageShare('non_linear_filters'), 'launch/include', 'jackal_localization.launch.py']
+                [FindPackageShare('non_linear_filters'), 'launch/include', 'ukf_localization.launch.py']
             ))
         )
     
