@@ -33,7 +33,6 @@ class odom_ground_truth(Node):
         request.name = self.entity_name
         request.reference_frame = "world"
         
-        self.get_logger().info(f'Calling service for entity {self.entity_name}...')
         future = self.get_state_client.call_async(request)
         future.add_done_callback(self.handle_get_entity_state_response)
 
@@ -49,9 +48,10 @@ class odom_ground_truth(Node):
 
     def publish_odometry(self, response):
         odom = Odometry()
-        odom.header.frame_id = "odom"
+        odom.header.frame_id = "map"
         odom.pose.pose = response.state.pose
         self.odom_publisher_.publish(odom)
+        self.get_logger().info(f'pose: {odom.pose.pose}')
 
 def main(args=None):
     rclpy.init(args=args)
