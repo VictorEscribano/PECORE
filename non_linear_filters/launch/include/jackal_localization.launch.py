@@ -13,10 +13,16 @@ from ament_index_python import get_package_share_directory
 def generate_launch_description():
 
     # Configs
-    efk_config = os.path.join(
-        get_package_share_directory('non_linear_filters'),
-        'config',
-        'ekf_config.yaml'
+    config_jackal_ekf = PathJoinSubstitution(
+        [FindPackageShare('pecore_launch'),
+         'config',
+         'localization.yaml'],
+    )
+
+    config_ekf_gps = PathJoinSubstitution(
+        [FindPackageShare('non_linear_filters'),
+         'config',
+         'ekf_config.yaml'],
     )
 
     config_imu_filter = PathJoinSubstitution(
@@ -25,17 +31,28 @@ def generate_launch_description():
          'imu_filter.yaml'],
     )
 
+
     # Odometry estimation
     odometry_group_action = GroupAction([
-        # Odometry Extended Kalman Filter
+        # Localization ekf node for for the odom frame
+        Node(
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_node',
+            output='screen',
+            parameters=[config_jackal_ekf],
+            remappings=[('/odometry/filtered', 'odometry/filtered/local')]
+        ),
+
         Node(
             package='robot_localization',
             executable='ekf_node',
             name='ekf_gps',
             output='screen',
-            parameters=[efk_config],
-            # remappings=[('odometry/filtered', 'odom')]
+            parameters=[config_ekf_gps],
+            remappings=[('/odometry/filtered', '/odometry/filtered/global')]
         ),
+
 
         # Madgwick Filter
         Node(
