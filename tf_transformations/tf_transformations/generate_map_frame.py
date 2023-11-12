@@ -136,12 +136,6 @@ class TransformConcatenator(Node):
                     response.state.pose.orientation
                 )
 
-                self.get_logger().info('map_H_baselink matrix:')
-                self.get_logger().info('-----------------------')
-                for row in map_H_baselink_matrix:
-                    self.get_logger().info(f'| {row[0]:.3f} {row[1]:.3f} {row[2]:.3f} {row[3]:.3f} |')
-                self.get_logger().info('-----------------------')
-
                 #TODO -> DONE: odom_H_baselink from TransformStamped to matrix 
                 odom_H_baselink = self.tf_buffer.lookup_transform('odom', 'base_link', rclpy.time.Time())
                 odom_H_baselink_matrix = calculate_transformation_matrix(
@@ -149,27 +143,12 @@ class TransformConcatenator(Node):
                     odom_H_baselink.transform.rotation
                 )
 
-                self.get_logger().info('odom_H_baselink matrix:')
-                self.get_logger().info('-----------------------')
-                for row in odom_H_baselink_matrix:
-                    self.get_logger().info(f'| {row[0]:.3f} {row[1]:.3f} {row[2]:.3f} {row[3]:.3f} |')
-                self.get_logger().info('-----------------------')
-
                 #TODO -> DONE: map_H_baselink * inv(odom_H_baselink) = map_H_odom
                 #TODO -> DONE: map_H_baselink * inv(odom_H_baselink) = map_H_odom
                 map_H_odom_matrix = np.dot(map_H_baselink_matrix, np.linalg.inv(odom_H_baselink_matrix))
 
-
-                self.get_logger().info('map_H_odom matrix:')
-                self.get_logger().info('-----------------------')
-                for row in map_H_odom_matrix:
-                    self.get_logger().info(f'| {row[0]:.3f} {row[1]:.3f} {row[2]:.3f} {row[3]:.3f} |')
-                self.get_logger().info('-----------------------')
-
-
                 #TODO -> DONE: map_H_odom to TransformStamped
                 map_H_odom_transform = self.transform_matrix_to_transform_stamped(map_H_odom_matrix, 'map', 'odom')
-
                 
                 #TODO -> DONE: publish map_H_odom
                 self.tf_broadcaster.sendTransform(map_H_odom_transform)
