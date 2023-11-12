@@ -19,15 +19,32 @@ def generate_launch_description():
         'ekf_config.yaml'
     )
 
+    config_imu_filter = PathJoinSubstitution(
+        [FindPackageShare('pecore_launch'),
+         'config',
+         'imu_filter.yaml'],
+    )
+
     # Odometry estimation
     odometry_group_action = GroupAction([
+        # Odometry Extended Kalman Filter
         Node(
-        package='robot_localization',
-        executable='ekf_node',
-        name='ekf_gps',
-        output='screen',
-        parameters=[efk_config]
-    )
+            package='robot_localization',
+            executable='ekf_node',
+            name='ekf_gps',
+            output='screen',
+            parameters=[efk_config],
+            # remappings=[('odometry/filtered', 'odom')]
+        ),
+
+        # Madgwick Filter
+        Node(
+            package='imu_filter_madgwick',
+            executable='imu_filter_madgwick_node',
+            name='imu_filter_node',
+            output='screen',
+            parameters=[config_imu_filter]
+        )
     ])
 
     # Global Localization (NavSat)
