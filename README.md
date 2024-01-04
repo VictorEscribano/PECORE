@@ -100,3 +100,32 @@ To solve this problem, 3 solutions have been proposed:
 
 [p1_PBVS-vel_controller_pbvs.webm](https://github.com/VictorEscribano/PECORE/assets/70441479/4d8b7501-48cd-417a-b0de-05fb9489afd7)
 
+## Practice 2: Non-linear filters
+YOu can found the info on the non_linear_filters package.
+
+## Practice 3: Autonomous exploration:
+Closest frontier approach:
+
+https://github.com/VictorEscribano/PECORE/assets/70441479/cb1749d6-b186-4447-b885-02af46dd6e74
+
+
+Own algorithm approach: LFE (Last Frontier Exploration)
+he original autonomous exploration algorithm computed the
+distance from the robot to frontiers in a map. However, this approach had a drawback: if the robot had already
+started planning a path to a frontier and a new, closer frontier appeared during the remapping, the robot would
+not adapt its path to reach the closer frontier. This led to suboptimal exploration and inefficient use of resources.
+To address this issue, I made changes to the code in explore.h, explore.cpp, frontier-search.h, and frontier-
+search.cpp. The key idea was to shift the focus of the cost function from the robot’s current position to the
+position of the last pursued frontier goal. This allowed the robot to continuously adapt its path to the nearest
+frontiers, providing a more efficient exploration strategy. So now if during a remmapping a new path needs to be
+computed it will be computed taking into account the distance from the last frontier and not the distance
+from the robot, making then that the following frontier chosen will be on the line of the exploration, not leading
+to jumps from one point to another on the map.
+The only drawback of the method is the compute method for the distance, the original explore lite package used
+euclidean distance and this method does not work well on this situation as it can take a neighbour frontier that
+is on the other side of the wall. To solve this the nav2 path distance should be tacked into account instead of
+the euclidean distance (Not implemented).
+
+https://github.com/VictorEscribano/PECORE/assets/70441479/830e1384-4c3f-450f-a5c7-65fc67801e9f
+
+
